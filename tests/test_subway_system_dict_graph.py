@@ -225,3 +225,11 @@ def test__remove_route():
         "Union Square": {"Park Street": {"Green Line D"}},
         "Fenway": {"Kenmore": {"Green Line D"}},
     }
+
+
+def test_find_routes_between_two_stops_with_unavailable_route():
+    graph = SubwaySystemDictGraph(routes=ROUTES)
+
+    routes = graph.find_routes_between_two_stops("Park Street", "Alewife", "Red Line")
+
+    assert not routes
