@@ -112,7 +112,7 @@ class SubwaySystemDictGraph:
         self,
         start_stop_name: str,
         end_stop_name: str,
-        unavailable_route_name: Optional[str],
+        unavailable_route_name: Optional[str] = None,
     ) -> List[Set[RouteName]]:
         """
         Use Breadth-First Search (BFS) to find all combinations of routes between two subway stops.

@@ -187,3 +187,41 @@ def test_find_routes_between_two_stops_raises_error():
 
     with pytest.raises(InvalidSubwayStopInputException):
         graph.find_routes_between_two_stops("West Station", "Alewife")
+
+
+def test__remove_route():
+    graph = SubwaySystemDictGraph(routes=ROUTES)
+    graph._remove_route(RouteName("Red Line"))
+
+    assert graph._routes == ROUTES[1:]
+
+    assert graph._graph == {
+        "Park Street": {
+            "Boylston": {"Green Line B", "Green Line D"},
+            "Union Square": {"Green Line D"},
+        },
+        "Boylston": {
+            "Park Street": {"Green Line B", "Green Line D"},
+            "Arlington": {"Green Line B", "Green Line D"},
+        },
+        "Arlington": {
+            "Boylston": {"Green Line B", "Green Line D"},
+            "Copley": {"Green Line B", "Green Line D"},
+        },
+        "Copley": {
+            "Arlington": {"Green Line B", "Green Line D"},
+            "Hynes Convention Center": {"Green Line B", "Green Line D"},
+        },
+        "Hynes Convention Center": {
+            "Copley": {"Green Line B", "Green Line D"},
+            "Kenmore": {"Green Line B", "Green Line D"},
+        },
+        "Kenmore": {
+            "Hynes Convention Center": {"Green Line B", "Green Line D"},
+            "Blandford Street": {"Green Line B"},
+            "Fenway": {"Green Line D"},
+        },
+        "Blandford Street": {"Kenmore": {"Green Line B"}},
+        "Union Square": {"Park Street": {"Green Line D"}},
+        "Fenway": {"Kenmore": {"Green Line D"}},
+    }
