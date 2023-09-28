@@ -1,5 +1,5 @@
 import collections
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Optional
 
 from custom_types import StopName, RouteName
 from exceptions import InvalidSubwayStopInputException
@@ -8,6 +8,7 @@ from models import Route
 
 class SubwaySystemDictGraph:
     def __init__(self, routes: List[Route]):
+        self._routes = routes
         self._graph = self.transform_routes_list_to_graph(routes)
 
     @staticmethod
@@ -94,19 +95,25 @@ class SubwaySystemDictGraph:
 
         return stops_dict
 
+    def _remove_route(self, route_name: RouteName):
+        new_routes = [route for route in self._routes if route.name != route_name]
+        self._routes = new_routes
+        self._graph = self.transform_routes_list_to_graph(new_routes)
+
     def find_routes_between_two_stops(
-        self, start_stop_name: str, end_stop_name: str
+        self, start_stop_name: str, end_stop_name: str, down_route_name: Optional[str]
     ) -> List[Set[RouteName]]:
         """
         Use Breadth-First Search (BFS) to find all combinations of routes between two subway stops.
 
-        The time complexity of this algorithm is liner O(V + E), where V = number of stops and E = number of connections
+        The time complexity of this algorithm is linear O(V + E), where V = number of stops and E = number of connections
         in the subway graph. This is because in the worst case, the algorithm checks all possible stops and connections
         before it finds a set of routes between the start and end stop.
 
         Args:
             start_stop_name (str): The name of the starting subway stop.
             end_stop_name (str): The name of the destination subway stop.
+            down_route_name (str, optional): The name of the down route, if there is one.
 
         Returns:
             List[Set[RouteName]]: A list of sets, each containing route names representing possible connections
@@ -121,6 +128,9 @@ class SubwaySystemDictGraph:
             raise InvalidSubwayStopInputException(
                 f"'{end_stop_name}' is not a valid subway stop."
             )
+
+        if down_route_name:
+            self._remove_route(RouteName(down_route_name))
 
         all_routes: List[Set[RouteName]] = []
 
