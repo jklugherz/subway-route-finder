@@ -101,7 +101,7 @@ class SubwaySystemDictGraph:
         self._graph = self.transform_routes_list_to_graph(new_routes)
 
     def find_routes_between_two_stops(
-        self, start_stop_name: str, end_stop_name: str, down_route_name: Optional[str]
+        self, start_stop_name: str, end_stop_name: str, unavailable_route_name: Optional[str]
     ) -> List[Set[RouteName]]:
         """
         Use Breadth-First Search (BFS) to find all combinations of routes between two subway stops.
@@ -113,7 +113,7 @@ class SubwaySystemDictGraph:
         Args:
             start_stop_name (str): The name of the starting subway stop.
             end_stop_name (str): The name of the destination subway stop.
-            down_route_name (str, optional): The name of the down route, if there is one.
+            unavailable_route_name (str, optional): The name of the unavailable route, if there is one.
 
         Returns:
             List[Set[RouteName]]: A list of sets, each containing route names representing possible connections
@@ -129,8 +129,8 @@ class SubwaySystemDictGraph:
                 f"'{end_stop_name}' is not a valid subway stop."
             )
 
-        if down_route_name:
-            self._remove_route(RouteName(down_route_name))
+        if unavailable_route_name:
+            self._remove_route(RouteName(unavailable_route_name))
 
         all_routes: List[Set[RouteName]] = []
 

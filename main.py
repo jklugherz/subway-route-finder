@@ -26,10 +26,10 @@ def get_subway_stops_from_user(subway_system: str) -> List[str]:
         subway_system (str): The acronym of the subway system.
 
     Returns:
-        List[str]: A list containing two subway stops provided by the user.
+        List[str]: A list containing two subway stops provided by the user, and a third optional unavailable route.
     """
     subway_stops_str = input(
-        f"\nPlease provide two {subway_system} subway stops you'd like to travel between. (Example input: Davis, Kendall/MIT)\n"
+        f"\nPlease provide two {subway_system} subway stops you'd like to travel between, and one unavailable subway route. (Example input: Davis, Kendall/MIT, Blue Line)\n"
     )
     return [x.strip() for x in subway_stops_str.split(",")]
 
@@ -91,9 +91,15 @@ def main():
     subway_stop_names = get_subway_stops_from_user(subway_system)
 
     routes_within_path = graph.find_routes_between_two_stops(*subway_stop_names)
-    print(
-        f"\nTo travel between these two stops, you can take the following subway routes: {', '.join(routes_within_path[0])}"
-    )
+
+    if not routes_within_path:
+        print(
+            f"Sorry, there is no way to get between these stops using {subway_system} subway routes."
+        )
+    else:
+        print(
+            f"\nTo travel between these two stops, you can take the following subway routes: {', '.join(routes_within_path[0])}"
+        )
 
 
 if __name__ == "__main__":
